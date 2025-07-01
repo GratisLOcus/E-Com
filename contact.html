@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Artisan Gallery - Contact Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS - keep it for consistency */
+        .artwork-card:hover .artwork-overlay {
+            opacity: 1;
+        }
+        .artwork-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .contact-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 1px #000;
+        }
+        .admin-panel {
+            display: none;
+        }
+        .show-admin {
+            display: block;
+        }
+        /* ADDED/RETAINED: No-scroll for body when modal/admin is open */
+        body.no-scroll {
+            overflow: hidden;
+        }
+        /* ADDED/RETAINED: Make edit modal content scrollable */
+        #edit-artwork-modal .bg-white {
+            max-height: 90vh; /* Set a maximum height for the modal content based on viewport height */
+            overflow-y: auto;  /* Enable vertical scrolling for the modal content if it overflows */
+            -webkit-overflow-scrolling: touch; /* Improves scrolling on iOS devices */
+        }
+    </style>
+  <script type="module" src="common-script.js"></script> 
+    </head>
+<body class="bg-white text-black font-sans antialiased">
+    <button id="admin-toggle" class="fixed bottom-4 right-4 bg-black text-white p-3 rounded-full z-50 shadow-lg">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <div id="admin-panel" class="admin-panel fixed inset-0 bg-white z-50 p-8 overflow-y-auto">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-light">Admin Dashboard</h2>
+                <button id="close-admin" class="text-2xl">&times;</button>
+            </div>
+            
+            <div class="space-y-12">
+                <div class="border-b pb-8">
+                    <h3 class="text-xl font-light mb-6">Admin Login</h3>
+                    <form class="space-y-4 max-w-md" id="admin-login-form"> <div>
+                            <label class="block mb-1">Email</label>
+                            <input type="email" id="admin-email-input" class="w-full border-b border-black py-2 px-1 focus:outline-none"> </div>
+                        <div>
+                            <label class="block mb-1">Password</label>
+                            <input type="password" id="admin-password-input" class="w-full border-b border-black py-2 px-1 focus:outline-none"> </div>
+                        <button type="submit" class="bg-black text-white py-2 px-6 mt-4">Login</button>
+                    </form>
+                </div>
+                
+                <div class="border-b pb-8">
+                    <h3 class="text-xl font-light mb-6">Website Settings</h3>
+                    <form class="space-y-4 max-w-md">
+                        <div>
+                            <label class="block mb-1">Website Name</label>
+                            <input type="text" id="website-name-input" class="w-full border-b border-black py-2 px-1 focus:outline-none" 
+                                        value="Artisan Gallery" data-setting="websiteName">
+                        </div>
+                        <button type="button" id="update-website-name" class="bg-black text-white py-2 px-6 mt-4">Update</button>
+                    </form>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-light mb-6">Add New Artwork</h3>
+                    <form class="space-y-4 max-w-md" id="add-artwork-form"> <div>
+                            <label class="block mb-1">Product Name</label>
+                            <input type="text" id="product-name-input" class="w-full border-b border-black py-2 px-1 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block mb-1">Description</label>
+                            <textarea id="product-description-input" rows="3" class="w-full border-b border-black py-2 px-1 focus:outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block mb-1">Price ($)</label>
+                            <input type="number" id="product-price-input" class="w-full border-b border-black py-2 px-1 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block mb-1">Image</label>
+                            <input type="file" id="product-image-upload" class="w-full py-2">
+                        </div>
+                        <button type="submit" class="bg-black text-white py-2 px-6 mt-4">Add Artwork</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-website">
+        <header class="border-b border-gray-100 py-6">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <h1 id="website-name" class="text-2xl font-light tracking-wide" data-setting="websiteName"></h1>
+                    </div>
+                    
+                    <div class="w-full md:w-auto flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8">
+                        <div class="relative w-full md:w-64">
+                            <input type="text" id="search-input" placeholder="Search artworks..." 
+                                        class="w-full border-b border-black py-1 px-2 focus:outline-none">
+                            <button class="absolute right-2 top-1">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <nav class="flex space-x-6">
+                            <a href="index.html" class="hover:underline">Home</a>
+                            <a href="shop.html" class="hover:underline">Shop</a>
+                            <a href="about.html" class="hover:underline">About</a>
+                            <a href="contact.html" class="hover:underline">Contact</a>
+                            <a href="cart.html" class="flex items-center hover:underline">
+                                <i class="fas fa-shopping-cart mr-1"></i>
+                                <span>Cart</span>
+                                <span id="cart-count" class="ml-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"></span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section id="contact" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="max-w-2xl mx-auto">
+                    <h2 class="text-2xl font-light mb-8">Contact</h2>
+                    
+                    <form id="contact-form" class="space-y-6">
+                        <div>
+                            <label class="block mb-2">Name</label>
+                            <input type="text" id="contact-name" class="contact-input w-full border-b border-black py-2 px-1 bg-transparent" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block mb-2">Email</label>
+                            <input type="email" id="contact-email" class="contact-input w-full border-b border-black py-2 px-1 bg-transparent" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block mb-2">Subject</label>
+                            <input type="text" class="contact-input w-full border-b border-black py-2 px-1 bg-transparent">
+                        </div>
+                        
+                        <div>
+                            <label class="block mb-2">Message</label>
+                            <textarea id="contact-message" class="contact-input w-full border-b border-black py-2 px-1 bg-transparent" rows="4" required></textarea>
+                        </div>
+                        <div id="contact-status-message" class="text-center mt-2 text-sm"></div>
+                        <button type="submit" id="send-message-btn" class="bg-black text-white py-2 px-6">Send Message</button>
+                    </form>
+                    
+                    <div class="mt-12">
+                        <h3 class="text-xl font-light mb-4">Studio Information</h3>
+                        <p class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 789 Gallery Lane, Amsterdam, Netherlands</p>
+                        <p class="mb-2"><i class="fas fa-phone mr-2"></i> +31 6 12 34 56 78</p>
+                        <p><i class="fas fa-envelope mr-2"></i> contact@iskandrasart.com</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="border-t border-gray-100 py-8">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <h2 id="website-name-footer" class="text-xl font-light" data-setting="websiteName"></h2>
+                        <p class="text-sm text-gray-500 mt-1">
+  <a href="https://www.instagram.com/website_builders_india?igsh=MW8wMThmeTA2MGx5NQ==" target="_blank" rel="noopener noreferrer">
+    © 2025 WBI | Website Builders India. All rights reserved.
+  </a>
+</p>
+
+                    </div>
+                    
+                    <div class="flex space-x-6">
+                        <a href="https://www.instagram.com/shanityart?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="hover:text-gray-600"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.instagram.com/shanityart?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="hover:text-gray-600"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/shanityart?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="hover:text-gray-600"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/shanityart?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="hover:text-gray-600"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="common-script.js"></script>
+
+</body>
+<script>
+    // Mobile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        const backdrop = document.getElementById('mobile-menu-backdrop');
+        
+        mobileMenuToggle.addEventListener('click', function() {
+            mobileMenu.classList.add('open');
+            backdrop.classList.add('active');
+            document.body.classList.add('no-scroll');
+        });
+        
+        mobileMenuClose.addEventListener('click', function() {
+            mobileMenu.classList.remove('open');
+            backdrop.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        });
+        
+        backdrop.addEventListener('click', function() {
+            mobileMenu.classList.remove('open');
+            backdrop.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        });
+        
+        // Admin panel toggle
+       
+        // Keep cart counts in sync
+        
+        const mobileCartCount = document.getElementById('mobile-cart-count');
+        
+        // Example: Update cart counts (you would replace this with your actual cart logic)
+        function updateCartCount(count) {
+            
+            mobileCartCount.textContent = count;
+        }
+        
+        // Initialize with 0 items
+        updateCartCount(0);
+    });
+</script>
+</html>
